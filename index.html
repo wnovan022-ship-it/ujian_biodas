@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian Lengkap: Praktikum Mikroskop (30 Soal)</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --error: #c0392b;
+            --bg: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 { margin: 0; font-size: 1.5rem; }
+        header p { margin: 5px 0 0; opacity: 0.8; font-size: 0.9rem; }
+
+        .exam-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 25px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .question-container {
+            padding: 25px;
+            min-height: 400px;
+        }
+
+        .question-card {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .question-card.active { display: block; }
+
+        .question-image {
+            text-align: center;
+            margin-bottom: 20px;
+            background: #fafafa;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .question-image img {
+            max-width: 100%;
+            max-height: 250px;
+            height: auto;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .option-btn:hover {
+            background-color: #f0f8ff;
+            border-color: var(--accent);
+        }
+
+        .option-btn.selected {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .controls {
+            padding: 20px 25px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        button.nav-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-prev { background: #95a5a6; color: white; }
+        .btn-next { background: var(--accent); color: white; }
+        .btn-submit { background: var(--success); color: white; display: none; }
+
+        /* Result Modal */
+        .result-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .result-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .score-circle {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Review Mode */
+        .review-mode .option-btn.correct {
+            background-color: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+        .review-mode .option-btn.wrong {
+            background-color: var(--error);
+            color: white;
+            border-color: var(--error);
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+            display: none;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Ujian Praktikum Mikroskop</h1>
+        <p>Biologi Dasar - 30 Soal Komprehensif</p>
+    </header>
+
+    <div class="exam-info">
+        <span id="progress-text">Soal 1 dari 30</span>
+        <span id="timer">Waktu: 00:00</span>
+    </div>
+
+    <div class="question-container" id="quiz-box">
+        <!-- Soal dirender via JavaScript -->
+    </div>
+
+    <div class="controls">
+        <button class="nav-btn btn-prev" onclick="prevQuestion()" disabled>Sebelumnya</button>
+        <button class="nav-btn btn-next" onclick="nextQuestion()">Selanjutnya</button>
+        <button class="nav-btn btn-submit" onclick="finishExam()">Kumpulkan Jawaban</button>
+    </div>
+</div>
+
+<!-- Result Modal -->
+<div class="result-modal" id="resultModal">
+    <div class="result-content">
+        <h2>Hasil Ujian Anda</h2>
+        <div class="score-circle" id="finalScore">0</div>
+        <p id="scoreMessage">Hebat!</p>
+        <button class="nav-btn btn-next" onclick="reviewAnswers()">Lihat Pembahasan</button>
+        <button class="nav-btn btn-prev" onclick="location.reload()">Ulangi Ujian</button>
+    </div>
+</div>
+
+<script>
+    // Aset Ilustrasi SVG Mandiri (Data URI)
+    const DIAGRAMS = {
+        revolver: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" width="100%" height="220">
+                <rect width="400" height="240" fill="#f8fafc" rx="8"/>
+                <path d="M170 20 L230 20 L230 65 L170 65 Z" fill="#475569"/>
+                <path d="M140 65 L260 65 L280 95 L120 95 Z" fill="#e11d48"/>
+                <rect x="180" y="95" width="40" height="75" fill="#334155" rx="3"/>
+                <rect x="180" y="105" width="40" height="6" fill="#3b82f6"/>
+                <rect x="130" y="95" width="30" height="50" fill="#334155" rx="3" transform="rotate(18 130 95)"/>
+                <rect x="235" y="105" width="35" height="90" fill="#334155" rx="3" transform="rotate(-18 235 105)"/>
+                <path d="M70 80 Q100 80 115 80" stroke="#0f172a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+                <text x="30" y="85" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0f172a">Bagian X (?)</text>
+            </svg>`),
+        okuler: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" width="100%" height="220">
+                <rect width="400" height="240" fill="#f8fafc" rx="8"/>
+                <!-- Eye -->
+                <path d="M160 30 Q200 5 240 30 Q200 55 160 30 Z" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+                <circle cx="200" cy="30" r="12" fill="#0284c7"/>
+                <circle cx="200" cy="30" r="5" fill="#0f172a"/>
+                <!-- Okuler Tube -->
+                <rect x="175" y="70" width="50" height="60" fill="#e11d48" rx="4"/>
+                <text x="185" y="105" fill="#fff" font-size="12" font-family="sans-serif" font-weight="bold">10x</text>
+                <!-- Body Tube -->
+                <rect x="182" y="130" width="36" height="80" fill="#64748b"/>
+                <path d="M80 95 L165 95" stroke="#0f172a" stroke-width="2" fill="none"/>
+                <text x="25" y="100" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0f172a">Lensa Ini (?)</text>
+            </svg>`),
+        diafragma: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" width="100%" height="220">
+                <rect width="400" height="240" fill="#f8fafc" rx="8"/>
+                <circle cx="200" cy="120" r="70" fill="#334155"/>
+                <circle cx="200" cy="120" r="30" fill="#fbbf24"/>
+                <path d="M200 50 L185 105 M250 80 L210 110 M270 120 L215 130 M240 170 L200 135 M160 170 L190 130 M130 120 L185 115" stroke="#94a3b8" stroke-width="3"/>
+                <rect x="255" y="115" width="70" height="10" fill="#64748b" rx="3"/>
+                <text x="200" y="215" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="13" fill="#334155">Pengatur Apertur / Lubang Cahaya</text>
+            </svg>`),
+        kondensor: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" width="100%" height="220">
+                <rect width="400" height="240" fill="#f8fafc" rx="8"/>
+                <!-- Stage -->
+                <rect x="120" y="60" width="160" height="10" fill="#1e293b"/>
+                <rect x="175" y="58" width="50" height="4" fill="#38bdf8"/>
+                <!-- Condenser -->
+                <path d="M150 110 L250 110 L220 150 L180 150 Z" fill="#e11d48"/>
+                <!-- Light Rays -->
+                <polygon points="180,210 220,210 250,110 150,110" fill="#fef08a" opacity="0.6"/>
+                <polygon points="150,110 250,110 200,60" fill="#facc15" opacity="0.8"/>
+                <circle cx="200" cy="215" r="14" fill="#fbbf24"/>
+                <text x="200" y="235" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#475569">Sumber Lampu</text>
+            </svg>`),
+        focusKnobs: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" width="100%" height="220">
+                <rect width="400" height="240" fill="#f8fafc" rx="8"/>
+                <!-- Body Arm -->
+                <path d="M220 30 Q160 30 160 120 L160 210 L260 210 L260 170 Q210 170 210 120 Q210 80 240 70 Z" fill="#cbd5e1"/>
+                <!-- Big Knob -->
+                <circle cx="185" cy="145" r="42" fill="#334155" stroke="#1e293b" stroke-width="3"/>
+                <!-- Small Knob -->
+                <circle cx="185" cy="145" r="22" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+                <!-- Labels -->
+                <text x="60" y="130" font-family="sans-serif" font-size="13" font-weight="bold" fill="#334155">Knob Besar (Makro)</text>
+                <text x="60" y="170" font-family="sans-serif" font-size="13" font-weight="bold" fill="#0284c7">Knob Kecil (Mikro)</text>
+                <line x1="150" y1="130" x2="170" y2="135" stroke="#334155" stroke-width="2"/>
+                <line x1="145" y1="165" x2="170" y2="155" stroke="#0284c7" stroke-width="2"/>
+            </svg>`),
+        bToQ: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="100%" height="200">
+                <rect width="400" height="220" fill="#f8fafc" rx="8"/>
+                <!-- Slide Real -->
+                <rect x="50" y="40" width="110" height="120" fill="#ffffff" stroke="#94a3b8" stroke-width="2" rx="4"/>
+                <text x="105" y="125" font-family="serif" font-size="70" font-weight="bold" text-anchor="middle" fill="#0f172a">b</text>
+                <text x="105" y="185" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#475569">Benda Nyata</text>
+                
+                <path d="M185 100 L225 100" stroke="#3b82f6" stroke-width="4" marker-end="url(#arrow)"/>
+                <text x="205" y="90" text-anchor="middle" font-size="20">🔬</text>
+
+                <!-- Field of view -->
+                <circle cx="310" cy="100" r="60" fill="#ffffff" stroke="#0284c7" stroke-width="4"/>
+                <text x="310" y="130" font-family="serif" font-size="75" font-weight="bold" text-anchor="middle" fill="#0284c7">q</text>
+                <text x="310" y="185" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#0284c7">Bayangan Mikroskop</text>
+            </svg>`),
+        calibration: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 180" width="100%" height="160">
+                <rect width="480" height="180" fill="#f8fafc" rx="8"/>
+                <!-- Mikrometer Pentas (Stage Micrometer) -->
+                <text x="20" y="45" font-family="sans-serif" font-size="12" font-weight="bold" fill="#dc2626">Skala Pentas (10 sk = 100 µm):</text>
+                <line x1="20" y1="60" x2="420" y2="60" stroke="#dc2626" stroke-width="3"/>
+                <!-- Ticks Pentas -->
+                <line x1="20" y1="50" x2="20" y2="70" stroke="#dc2626" stroke-width="3"/>
+                <line x1="420" y1="50" x2="420" y2="70" stroke="#dc2626" stroke-width="3"/>
+                <text x="20" y="85" font-size="11" fill="#dc2626">0</text>
+                <text x="410" y="85" font-size="11" fill="#dc2626">10</text>
+
+                <!-- Mikrometer Okuler -->
+                <text x="20" y="120" font-family="sans-serif" font-size="12" font-weight="bold" fill="#0284c7">Skala Okuler (40 skala):</text>
+                <line x1="20" y1="135" x2="420" y2="135" stroke="#0284c7" stroke-width="3"/>
+                <line x1="20" y1="125" x2="20" y2="145" stroke="#0284c7" stroke-width="3"/>
+                <line x1="120" y1="130" x2="120" y2="140" stroke="#0284c7" stroke-width="1.5"/>
+                <line x1="220" y1="130" x2="220" y2="140" stroke="#0284c7" stroke-width="1.5"/>
+                <line x1="320" y1="130" x2="320" y2="140" stroke="#0284c7" stroke-width="1.5"/>
+                <line x1="420" y1="125" x2="420" y2="145" stroke="#0284c7" stroke-width="3"/>
+                <text x="20" y="160" font-size="11" fill="#0284c7">0</text>
+                <text x="410" y="160" font-size="11" fill="#0284c7">40</text>
+            </svg>`),
+        carryPosition: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="100%" height="200">
+                <rect width="400" height="220" fill="#f8fafc" rx="8"/>
+                <!-- Simple Microscope outline -->
+                <path d="M190 40 L210 40 L210 80 L230 110 L230 170 L260 170 L260 190 L140 190 L140 170 L170 170 L170 110 Q170 80 190 40 Z" fill="#64748b"/>
+                <!-- Hand Right -->
+                <rect x="235" y="105" width="70" height="24" fill="#f59e0b" rx="6"/>
+                <text x="315" y="122" font-family="sans-serif" font-size="12" font-weight="bold" fill="#b45309">Tangan 1 (Lengan)</text>
+                <!-- Hand Left -->
+                <rect x="120" y="195" width="160" height="18" fill="#10b981" rx="4"/>
+                <text x="200" y="210" font-family="sans-serif" font-size="11" font-weight="bold" fill="#065f46" text-anchor="middle">Tangan 2 (Menyangga Kaki/Alas)</text>
+            </svg>`)
+    };
+
+    const questions = [
+        // BAGIAN 1: PENGENALAN ALAT & FUNGSI (1-10)
+        {
+            q: "Bagian mikroskop yang ditunjuk panah pada gambar di atas berfungsi sebagai tempat melekatnya lensa objektif dan dapat diputar untuk mengganti perbesaran. Bagian ini disebut...",
+            img: DIAGRAMS.revolver,
+            options: ["Okuler", "Revolver", "Kondensor", "Diafragma"],
+            answer: 1,
+            exp: "Revolver adalah lempeng berputar yang memegang beberapa lensa objektif sehingga perbesaran dapat diganti dengan mudah."
+        },
+        {
+            q: "Lensa yang letaknya paling dekat dengan mata pengamat (seperti terlihat pada ilustrasi) disebut...",
+            img: DIAGRAMS.okuler,
+            options: ["Lensa Objektif", "Lensa Okuler", "Lensa Kondensor", "Lensa Kolektor"],
+            answer: 1,
+            exp: "Lensa okuler berada di bagian atas tabung dan langsung berhadapan dengan mata pengamat (biasanya bernilai 10x atau 16x)."
+        },
+        {
+            q: "Apa fungsi utama komponen diafragma mekanik yang diilustrasikan pada diagram di atas?",
+            img: DIAGRAMS.diafragma,
+            options: ["Mengatur besar kecilnya intensitas cahaya yang masuk ke preparat", "Memfokuskan berkas cahaya", "Menyangga kaca objek", "Mengatur ketinggian meja"],
+            answer: 0,
+            exp: "Diafragma berfungsi mengatur bukaan aperture/intensitas sinar yang diteruskan ke arah preparat."
+        },
+        {
+            q: "Komponen optik yang mengumpulkan berkas cahaya dari lampu dan memfokuskannya ke preparat (lihat diagram jalur sinar) adalah...",
+            img: DIAGRAMS.kondensor,
+            options: ["Reflektor", "Kondensor", "Okuler", "Tabung"],
+            answer: 1,
+            exp: "Kondensor memusatkan berkas cahaya dari sumber iluminator ke titik spesimen di atas meja objek."
+        },
+        {
+            q: "Berdasarkan ilustrasi tombol fokus di atas, pengatur fokus kasar (Makrometer) ditandai dengan ukuran knob yang...",
+            img: DIAGRAMS.focusKnobs,
+            options: ["Lebih kecil dari mikrometer", "Lebih besar untuk pergeseran cepat", "Sangat tipis di bagian dalam", "Ditempatkan di lensa okuler"],
+            answer: 1,
+            exp: "Makrometer memiliki diameter knob lebih besar karena berfungsi menaikkan/menurunkan meja preparat secara signifikan dan cepat."
+        },
+        {
+            q: "Lensa objektif dengan perbesaran paling lemah (4x) standar internasional ditandai cincin warna...",
+            options: ["Merah (4x)", "Kuning (10x)", "Biru/Hijau (40x)", "Putih/Hitam (100x)"],
+            answer: 0,
+            exp: "Standar kode warna DIN: Merah = 4x, Kuning = 10x, Biru = 40x, Putih = 100x (minyak imersi)."
+        },
+        {
+            q: "Bagian kaki mikroskop (Base) yang berbentuk tapal kuda atau pelat kokoh berfungsi untuk...",
+            options: ["Memberikan stabilitas agar mikroskop berdiri kokoh", "Hanya sebagai penambah nilai estetika", "Tempat melilit kabel adaptor", "Memutar lensa objektif"],
+            answer: 0,
+            exp: "Kaki mikroskop memberikan titik tumpu gravitasi agar alat tidak mudah goyang atau roboh."
+        },
+        {
+            q: "Lengan mikroskop (Arm) dirancang khusus untuk berfungsi sebagai...",
+            options: ["Sumber cahaya penerang", "Pegangan utama saat mengangkat dan memindahkan mikroskop", "Tempat meletakkan kaca preparat", "Pengatur ketajaman lensa"],
+            answer: 1,
+            exp: "Lengan mikroskop adalah kerangka utama tempat tangan memegang saat unit dipindahkan."
+        },
+        {
+            q: "Meja objek (Stage) dilengkapi klip atau penjepit mekanik yang berfungsi untuk...",
+            options: ["Mengatur aperture cahaya", "Menjepit kaca objek/slide agar tidak bergeser saat diamati", "Memperbesar ukuran objek", "Menghubungkan arus listrik"],
+            answer: 1,
+            exp: "Penjepit preparat menjaga cover glass dan object glass tetap stabil di atas lintasan cahaya."
+        },
+        {
+            q: "Sumber cahaya pada mikroskop biologi modern umumnya menggunakan...",
+            options: ["Cermin pantul cahaya lilin", "Lampu LED atau Halogen terintegrasi", "Cahaya matahari langsung tanpa filter", "Pembakar spirtus"],
+            answer: 1,
+            exp: "Mikroskop modern menggunakan iluminator lampu LED atau Halogen yang stabil dengan intensitas variabel."
+        },
+
+        // BAGIAN 2: PROSEDUR & CARA PAKAI (11-20)
+        {
+            q: "Berdasarkan prinsip ergonomi dan keamanan laboratorium, cara membawa mikroskop yang benar adalah...",
+            img: DIAGRAMS.carryPosition,
+            options: ["Satu tangan memegang lengan, satu tangan menyangga kaki mikroskop", "Dua tangan memegang kedua lensa okuler", "Satu tangan menjinjing meja preparat", "Diangkat hanya pada kabel dayanya"],
+            answer: 0,
+            exp: "Selalu gunakan dua tangan: tangan dominan memegang lengan mikroskop dan tangan lainnya menyangga alas kaki."
+        },
+        {
+            q: "Sebelum menyalakan mikroskop dan meletakkan slide, pastikan posisi lensa objektif berada pada...",
+            options: ["Perbesaran terkuat (100x)", "Perbesaran sedang (40x)", "Perbesaran terlemah (4x atau 10x)", "Sembarang posisi lensa"],
+            answer: 2,
+            exp: "Memulai dari perbesaran terlemah memberikan jarak kerja (working distance) paling aman dan medan pandang terluas."
+        },
+        {
+            q: "Saat mencari bayangan pertama kali pada perbesaran lemah, pengatur fokus yang pertama digerakkan adalah...",
+            options: ["Mikrometer (Halus)", "Makrometer (Kasar)", "Diafragma", "Knob Kondensor"],
+            answer: 1,
+            exp: "Makrometer dipakai terlebih dahulu untuk menaikkan meja mendekati fokus kasar sebelum dihaluskan."
+        },
+        {
+            q: "Jika bayangan objek sudah tampak namun kontur sel masih kabur, tombol yang harus diputar halus adalah...",
+            options: ["Makrometer", "Mikrometer", "Revolver", "Knob Kaki"],
+            answer: 1,
+            exp: "Mikrometer berfungsi menggeser fokus dalam fraksi milimeter untuk mendapatkan ketajaman detail."
+        },
+        {
+            q: "Posisi meja objek saat pertama kali preparat dipasang sebelum pengamatan sebaiknya...",
+            options: ["Dinaikkan setinggi mungkin hingga menekan lensa", "Ditranslasikan paling bawah / serendah mungkin", "Dilepas dari dudukannya", "Dimiringkan 45 derajat"],
+            answer: 1,
+            exp: "Meja berada di posisi bawah untuk menghindari benturan antara kaca preparat dengan ujung lensa objektif."
+        },
+        {
+            q: "Untuk mengganti perbesaran objektif dari 10x menuju 40x, langkah yang benar adalah memutar...",
+            options: ["Tabung okuler", "Lempeng Revolver sampai berbunyi 'klik'", "Tuas kondensor", "Sekrup makrometer"],
+            answer: 1,
+            exp: "Pegang dan putar cincin revolver (bukan memegang tabung lensa objektifnya langsung) hingga terkunci pada posisinya."
+        },
+        {
+            q: "Sifat bayangan akhir yang dibentuk oleh kombinasi lensa mikroskop cahaya monokuler/binokuler adalah...",
+            options: ["Nyata, tegak, diperbesar", "Maya, tegak, diperbesar", "Nyata, terbalik, diperkecil", "Maya, terbalik, diperbesar"],
+            answer: 3,
+            exp: "Lensa objektif membentuk bayangan nyata terbalik diperbesar, lalu diperbesar kembali oleh okuler menghasilkan bayangan akhir maya, terbalik, dan diperbesar."
+        },
+        {
+            q: "Jika preparat bertuliskan huruf 'b' diletakkan di atas meja objek, bayangan yang terlihat di lensa okuler adalah...",
+            img: DIAGRAMS.bToQ,
+            options: ["Huruf b", "Huruf d", "Huruf p", "Huruf q"],
+            answer: 3,
+            exp: "Mikroskop membalik objek secara vertikal dan horizontal (inversi 180°), sehingga huruf 'b' tampak sebagai huruf 'q'."
+        },
+        {
+            q: "Prosedur penutupan yang benar setelah selesai praktikum mikroskop adalah...",
+            options: ["Membiarkan lampu tetap menyala pada voltase maksimum", "Menurunkan stage, mengembalikan revolver ke lensa 4x, mematikan lampu, dan menutup dust cover", "Melepaskan seluruh lensa objektif ke dalam air", "Menyimpan kabel dalam kondisi masih tertancap ke stopkontak"],
+            answer: 1,
+            exp: "Prosedur baku: turunkan meja, setel lensa terlemah, matikan daya, gulung kabel rapi, dan beri penutup debu."
+        },
+        {
+            q: "Mengapa minyak imersi HANYA boleh digunakan pada lensa objektif bertanda khusus (100x Oil)?",
+            options: ["Karena minyak imersi sangat mudah terbakar", "Karena lensa kering (4x-40x) tidak memiliki segel kedap dan minyak akan merusak elemen optik dalamnya", "Karena minyak imersi membuat perbesaran berkurang", "Karena minyak membuat kaca preparat larut"],
+            answer: 1,
+            exp: "Lensa kering tidak dirancang kedap cairan; minyak yang meresap ke dalam sela optik akan merusak lapisan antirefleksi dan memburamkan bayangan."
+        },
+
+        // BAGIAN 3: PREPARAT & PERAWATAN (21-25)
+        {
+            q: "Untuk membuat preparat segar jaringan tumbuhan (misalnya penampang melintang batang), spesimen harus disayat tipis menggunakan...",
+            options: ["Gunting tumpul", "Silet tajam baru / Mikrotom tangan", "Pinset tumpul", "Jarum preparat"],
+            answer: 1,
+            exp: "Irisan harus setipis mungkin (transparan terhadap cahaya) menggunakan silet tajam atau mikrotom agar berkas cahaya dapat menembus sel."
+        },
+        {
+            q: "Tujuan utama penambahan reagen Lugol (Iodin) pada pembuatan preparat sel epidermis bawang merah adalah...",
+            options: ["Membuat sel membelah lebih cepat", "Mewarnai inti sel dan struktur sitoplasma agar meningkatkan kontras visual", "Mengeringkan preparat basah", "Mencegah kaca penutup pecah"],
+            answer: 1,
+            exp: "Lugol mengikat komponen seluler (termasuk pati dan protein membran) sehingga struktur nukleus terlihat kontras di bawah medan terang."
+        },
+        {
+            q: "Munculnya gelembung udara pada preparat basah sangat mengganggu pengamatan mikroskopis karena...",
+            options: ["Membentuk lingkaran hitam bertepi tebal yang membiaskan cahaya secara acak dan menutupi spesimen", "Menyebabkan lensa objektif langsung berjamur", "Membuat spesimen berubah warna menjadi ungu", "Menghasilkan getaran elektromagnetik"],
+            answer: 0,
+            exp: "Perbedaan indeks bias antara udara dan air membentuk cincin refraksi gelap yang tebal dan menghalangi bidang pandang."
+        },
+        {
+            q: "Material yang diizinkan untuk membersihkan permukaan kaca lensa mikroskop dari kotoran atau sisa minyak adalah...",
+            options: ["Kertas Lensa khusus (Lens Paper) atau kain mikrofiber optik", "Tisu dapur kasar", "Ujung jas lab", "Kertas amplas halus"],
+            answer: 0,
+            exp: "Permukaan lensa sangat rentan tergores. Hanya kertas lensa murni bebas serat kasar yang aman digunakan dengan cairan pembersih optik (seperti alkohol-eter)."
+        },
+        {
+            q: "Untuk mencegah tumbuhnya jamur (*fungus*) pada sistem optik di ruang laboratorium beriklim tropis, mikroskop harus disimpan di...",
+            options: ["Tempat terbuka dekat jendela yang lembap", "Lemari khusus bertemperatur terkontrol / Dry Box yang dilengkapi silika gel aktif", "Di dalam kardus tertutup rapat di lantai basah", "Ruang pendingin freezer"],
+            answer: 1,
+            exp: "Spora jamur berkembang pada kelembaban udara di atas 60%. Dry cabinet dengan dehumidifier atau silika gel menjaga kelembaban tetap rendah."
+        },
+
+        // BAGIAN 4: KALKULASI & ANALISIS (26-30)
+        {
+            q: "Jika pengamatan dilakukan dengan lensa okuler 10x dan lensa objektif 40x, maka total perbesaran bayangan yang terbentuk adalah...",
+            options: ["50 kali", "400 kali", "4000 kali", "40 kali"],
+            answer: 1,
+            exp: "Total Perbesaran = Perbesaran Okuler × Perbesaran Objektif = 10 × 40 = 400x."
+        },
+        {
+            q: "Berdasarkan data kalibrasi mikrometer pada gambar: 10 skala pentas (setara 100 µm) berhimpit tepat dengan 40 skala okuler. Berapa nilai ukuran asli untuk 1 skala okuler?",
+            img: DIAGRAMS.calibration,
+            options: ["2.5 µm", "4.0 µm", "0.25 µm", "25 µm"],
+            answer: 0,
+            exp: "1 Skala Okuler = (Panjang Skala Pentas Terhimpit) / (Jumlah Skala Okuler) = 100 µm / 40 = 2.5 µm."
+        },
+        {
+            q: "Jika nilai 1 skala okuler terkalibrasi adalah 2.5 µm, dan diameter sebuah sel stomata terukur sepanjang 8 skala okuler, berapa ukuran aktual sel tersebut?",
+            options: ["10 µm", "16 µm", "20 µm", "32 µm"],
+            answer: 2,
+            exp: "Ukuran Nyata = Jumlah Skala × Nilai Kalibrasi = 8 × 2.5 µm = 20 µm."
+        },
+        {
+            q: "Ketika Anda beralih dari lensa objektif 10x ke lensa objektif 100x, luas bidang pandang (Field of View) dan kecerahan gambar akan...",
+            options: ["Semakin luas dan semakin terang", "Semakin sempit (mengecil) dan cenderung lebih redup", "Tetap sama persis", "Menjadi tidak terbatas"],
+            answer: 1,
+            exp: "Semakin tinggi daya perbesaran, area bidang pandang yang tertangkap semakin sempit dan intensitas cahaya per satuan luas berkurang sehingga bidang pandang tampak lebih redup."
+        },
+        {
+            q: "Batas daya pisah (resolving power) teoretis maksimum dari mikroskop cahaya medan terang (brightfield) adalah sekitar...",
+            options: ["0.2 mikrometer (µm)", "2.0 milimeter (mm)", "0.2 nanometer (nm)", "10 sentimeter (cm)"],
+            answer: 0,
+            exp: "Resolusi mikroskop cahaya dibatasi oleh panjang gelombang cahaya tampak (difraksi Abbe), yaitu sekitar 0.2 µm (200 nm)."
+        }
+    ];
+
+    let currentQuestion = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+    let timerInterval;
+    let seconds = 0;
+
+    function initQuiz() {
+        renderQuestion();
+        startTimer();
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            seconds++;
+            const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const secs = (seconds % 60).toString().padStart(2, '0');
+            document.getElementById('timer').innerText = `Waktu: ${mins}:${secs}`;
+        }, 1000);
+    }
+
+    function renderQuestion() {
+        const container = document.getElementById('quiz-box');
+        const q = questions[currentQuestion];
+        
+        let imgHTML = '';
+        if(q.img) {
+            imgHTML = `<div class="question-image"><img src="${q.img}" alt="Ilustrasi Soal ${currentQuestion + 1}"></div>`;
+        }
+
+        let html = `
+            <div class="question-card active">
+                ${imgHTML}
+                <div class="question-text">${currentQuestion + 1}. ${q.q}</div>
+                <div class="options-grid">
+        `;
+
+        q.options.forEach((opt, index) => {
+            const isSelected = userAnswers[currentQuestion] === index ? 'selected' : '';
+            html += `<button class="option-btn ${isSelected}" onclick="selectOption(${index})">${String.fromCharCode(65+index)}. ${opt}</button>`;
+        });
+
+        html += `</div></div>`;
+        container.innerHTML = html;
+
+        // Update Navigasi
+        document.getElementById('progress-text').innerText = `Soal ${currentQuestion + 1} dari ${questions.length}`;
+        document.querySelector('.btn-prev').disabled = currentQuestion === 0;
+        
+        if (currentQuestion === questions.length - 1) {
+            document.querySelector('.btn-next').style.display = 'none';
+            document.querySelector('.btn-submit').style.display = 'block';
+        } else {
+            document.querySelector('.btn-next').style.display = 'block';
+            document.querySelector('.btn-submit').style.display = 'none';
+        }
+    }
+
+    function selectOption(index) {
+        userAnswers[currentQuestion] = index;
+        renderQuestion();
+    }
+
+    function nextQuestion() {
+        if (currentQuestion < questions.length - 1) {
+            currentQuestion++;
+            renderQuestion();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            renderQuestion();
+        }
+    }
+
+    function finishExam() {
+        clearInterval(timerInterval);
+        
+        let score = 0;
+        questions.forEach((q, i) => {
+            if (userAnswers[i] === q.answer) score++;
+        });
+
+        const finalScore = Math.round((score / questions.length) * 100);
+        document.getElementById('finalScore').innerText = finalScore;
+        
+        let msg = "";
+        if(finalScore >= 85) msg = "Sangat Baik! Penguasaan instrumen mikroskop sudah sangat matang.";
+        else if(finalScore >= 70) msg = "Bagus! Pemahaman prinsip dan prosedur sudah cukup baik.";
+        else msg = "Perlu penguatan kembali pada kalkulasi mikrometer dan prosedur keselamatan optik.";
+        
+        document.getElementById('scoreMessage').innerText = msg;
+        document.getElementById('resultModal').style.display = 'flex';
+    }
+
+    function reviewAnswers() {
+        document.getElementById('resultModal').style.display = 'none';
+        document.querySelector('.controls').style.display = 'none';
+        document.querySelector('.exam-info').style.display = 'none';
+        
+        const container = document.getElementById('quiz-box');
+        container.classList.add('review-mode');
+        
+        let html = "<h2 style='text-align:center; color:#2c3e50; margin-bottom: 25px;'>Pembahasan Soal</h2>";
+        
+        questions.forEach((q, i) => {
+            const isCorrect = userAnswers[i] === q.answer;
+            const statusColor = isCorrect ? "var(--success)" : "var(--error)";
+            
+            let imgHTML = '';
+            if(q.img) {
+                imgHTML = `<div class="question-image"><img src="${q.img}" alt="Diagram Pembahasan ${i + 1}"></div>`;
+            }
+
+            html += `
+                <div class="question-card active" style="margin-bottom: 30px; border-bottom: 2px solid #edf2f7; padding-bottom: 25px;">
+                    ${imgHTML}
+                    <div class="question-text" style="color:${statusColor}">
+                        <strong>${i+1}. ${q.q}</strong> 
+                        ${isCorrect ? '✅ (Benar)' : '❌ (Salah)'}
+                    </div>
+                    <div class="options-grid">
+            `;
+            
+            q.options.forEach((opt, idx) => {
+                let className = "option-btn";
+                if (idx === q.answer) className += " correct";
+                else if (idx === userAnswers[i] && !isCorrect) className += " wrong";
+                
+                html += `<div class="${className}">${String.fromCharCode(65+idx)}. ${opt}</div>`;
+            });
+            
+            html += `
+                    </div>
+                    <div class="explanation" style="display:block">
+                        <strong>Kunci & Penjelasan:</strong> ${q.exp}
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+        window.scrollTo(0,0);
+    }
+
+    // Jalankan aplikasi
+    initQuiz();
+</script>
+
+</body>
+</html>
+
